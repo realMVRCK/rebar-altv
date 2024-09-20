@@ -30,3 +30,17 @@ async function getCommands(player: alt.Player) {
 
 alt.onClient(ChatEvents.toWebview.commands, getCommands);
 messenger.message.on(handlePlayerMessage);
+
+const api = Rebar.useApi();
+
+// Ideally you only want to show the chat, after the player has fully logged in
+alt.on('playerConnect', async (player) => {
+    const chat = await api.getAsync('chat-api');
+    chat.show(player);
+
+    // Check if they're chatting server-side
+    const isChatting = chat.isChatting(player);
+
+    // Call back to check when a players chat status changes
+    chat.onChatStatusChange((player, isCurrentlyChatting) => {});
+});
